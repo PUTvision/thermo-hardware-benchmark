@@ -1,0 +1,14 @@
+albumentations
+click
+matplotlib
+neptune-client
+neptune-tensorflow-keras
+numpy
+opencv-python
+PyYAML
+scipy
+seaborn
+sklearn
+tensorflow
+tensorflow-addons
+tqdm
