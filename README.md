@@ -1,4 +1,4 @@
-# Hardware Benchmark of Presence Monitoring in Thermal Images
+# Hardware Benchmark of Efficient People Counting Algorithm
 
 > This is the official repository of the paper: [*Efficient People Counting in Thermal Images: The Benchmark of Resource-Constrained Hardware*](https://ieeexplore.ieee.org/document/9964383).
 
