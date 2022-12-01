@@ -53,9 +53,9 @@ The benchmark utilizes [Thermo Presence](https://github.com/PUTvision/thermo-pre
 |------------------------------------------------------------------------------------------------|:---------------:|:-------------------:|:-----:|:------:|:-------------------------------:|
 | [Arduino Nano 33 BLE Sense](https://docs.arduino.cc/hardware/nano-33-ble-sense)                        | nRF52840             | 64 MHz  | 1 MB | 256 KB | TFLite Micro                    |
 | [Arduino Portenta H7](http://store.arduino.cc/products/portenta-h7)                                    | STM32H747            | 480 MHz | 2 MB | 1 MB   | TFLite Micro                    |
+| [LOLIN32](https://www.mischianti.org/2021/02/21/esp32-wemos-lolin32-high-resolution-pinout-and-specs/) | ESP32-WROOM-32       | 240 MHz | 4 MB | 520 KB | TFLite Micro with ESP-NN support|
 | [STM32 F429ZI Nucleo-144](https://www.st.com/en/evaluation-tools/nucleo-f429zi.html)                   | STM32F429            | 180 MHz | 2 MB | 256 KB | STM32 Cube AI                   |
 | [STM32 H745ZI Nucleo-144](https://www.st.com/en/evaluation-tools/nucleo-h745zi-q.html)                 | STM32H745            | 480 MHz | 2 MB | 1 MB   | STM32 Cube AI                   |
-| [LOLIN32](https://www.mischianti.org/2021/02/21/esp32-wemos-lolin32-high-resolution-pinout-and-specs/) | ESP32-WROOM-32       | 240 MHz | 4 MB | 520 KB | TFLite Micro with ESP-NN support|
 | [Raspberry Pi 4B](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/)                        | Quad Core Cortex-A72 | 1.5 GHz | *    | 2 GB   | TensorFlow Lite                 |
 | [Coral USB Accelerator](https://coral.ai/products/accelerator/)                                        | Google Edge TPU      | 500 MHz | *    | 8 MB   | TensorFlow Lite                 |
 |[Intel Neural Compute Stick 2](https://ark.intel.com/content/www/us/en/ark/products/140109/intel-neural-compute-stick-2.html)| Intel Movidius Myriad X VPU | 700 MHz | * | 4 GB | OpenVINO |
@@ -74,6 +74,8 @@ The neural network is based on U-Net architecture with shallow structure, single
 
 ## Results
 
+### Neural Network Metrics
+
 <div align="center">
 
 | **Metric Name** | MAE    | MSE    | Counting MAE | Counting MSE | Counting MRAPE [%] | Accuracy | F1 Score | No. of parameters |
@@ -82,30 +84,30 @@ The neural network is based on U-Net architecture with shallow structure, single
 
 </div>
 
-## Hardware benchmark
+### Hardware Performance 
 
 <div align="center">
 
 | Device                                          | Data Type | Avg. Inference Time [ms]  | Counting MAE | Counting MSE | Counting MRAPE [%]  |
 |-------------------------------------------------|:---------:|:-------------------------:|:------------:|:------------:|:-------------------:|
 | Arduino Nano 33 BLE Sense                       | INT8      | 1430.125 ±1.143           | 0.023        | 0.024        | 0.82                |
-| Arduino Portenta H7                             | INT8      | 137.494 ±0.500            | 0.023        | 0.024        | 0.82                |
-| STM32 F429ZI Nucleo-144                         | INT8      | 230.939 ±0.100            | 0.036        | 0.038        | 1.14                |
-| STM32 H745ZI Nucleo-144                         | FP32      | 165.983 ±0.100            | 0.023        | 0.023        | 0.81                |
-|                                                 | INT8      | 53.260 ±0.100             | 0.036        | 0.038        | 1.14                |
-| LOLIN32                                         | INT8      | 840.442 ±0.021            | 0.023        | 0.023        | 0.81                |
-| Raspberry Pi 4B                                 | FP32      | 7.707 ±0.591              | 0.023        | 0.023        | 0.81                |
-|                                                 | FP16      | 7.690 ±0.558              | 0.023        | 0.023        | 0.81                |
-|                                                 | INT8      | 4.194 ±0.052              | 0.038        | 0.039        | 1.18                |
-| Raspberry Pi 4B + Coral USB Accelerator (std)   | INT8      | 0.605 ±0.044              | 0.037        | 0.038        | 1.16                |
-| Raspberry Pi 4B + Coral USB Accelerator (max)   | INT8      | 0.570 ±0.060              | 0.037        | 0.038        | 1.16                |
-| Raspberry Pi 4B + Intel Neural Compute Stick 2  | FP32      | 2.630 ±0.159              | 0.028        | 0.029        | 0.92                |
-|                                                 | FP16      | 2.300 ±0.100              | 0.028        | 0.029        | 0.91                |
+| Arduino Portenta H7                             | INT8      |  137.494 ±0.500           | 0.023        | 0.024        | 0.82                |
+| LOLIN32                                         | INT8      |  840.442 ±0.021           | 0.023        | 0.023        | 0.81                |
+| STM32 F429ZI Nucleo-144                         | INT8      |  230.939 ±0.100           | 0.036        | 0.038        | 1.14                |
+| STM32 H745ZI Nucleo-144                         | FP32      |  165.983 ±0.100           | 0.023        | 0.023        | 0.81                |
+|                                                 | INT8      |   53.260 ±0.100           | 0.036        | 0.038        | 1.14                |
+| Raspberry Pi 4B                                 | FP32      |    7.707 ±0.591           | 0.023        | 0.023        | 0.81                |
+|                                                 | FP16      |    7.690 ±0.558           | 0.023        | 0.023        | 0.81                |
+|                                                 | INT8      |    4.194 ±0.052           | 0.038        | 0.039        | 1.18                |
+| Raspberry Pi 4B + Coral USB Accelerator (std)   | INT8      |    0.605 ±0.044           | 0.037        | 0.038        | 1.16                |
+| Raspberry Pi 4B + Coral USB Accelerator (max)   | INT8      |    0.570 ±0.060           | 0.037        | 0.038        | 1.16                |
+| Raspberry Pi 4B + Intel Neural Compute Stick 2  | FP32      |    2.630 ±0.159           | 0.028        | 0.029        | 0.92                |
+|                                                 | FP16      |    2.300 ±0.100           | 0.028        | 0.029        | 0.91                |
 
 </div>
-
-The figure below consists of current consumption characteristics measured on benchmarked hardware. The graphs are limited to 180 seconds in order to highlight peaks related to the prediction stage. 
 
 <p align="center">
   <img width='800px' src="./README/device_inference_current_consumption.png" />
 </p>
+
+The figure above consists of current consumption characteristics measured on benchmarked hardware. The graphs are limited to 180 seconds in order to highlight peaks related to the prediction stage. 
