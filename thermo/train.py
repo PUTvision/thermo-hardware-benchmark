@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import neptune.new as neptune
 from neptune.new.integrations.tensorflow_keras import NeptuneCallback
 
-from models import UNet, KraftUNet, MetwalyFNN
+from models import UNet
 from metrics import CountAccuracy, CountMAE, CountMSE, CountMeanRelativeAbsoluteError
 from data_generator.thermal_data_generator import ThermalDataset
 from data_generator.thermal_data_generator_v2 import ThermalDataset as ThermalDatasetv2
@@ -24,7 +24,7 @@ from utils.model_utils import check_model_prediction, evaluate
 
 @click.command()
 @click.option('-p', '--config_path', help='Path to file with config', type=str)
-@click.option('--log_neptune', help='Path to file with config', type=bool, default=True)
+@click.option('--log_neptune', is_flag=True)
 def train(config_path, log_neptune):
     print(f'TensorFlow version: {tf.__version__}')
     print(tf.config.list_physical_devices('GPU'))
@@ -43,17 +43,6 @@ def train(config_path, log_neptune):
             project=credentials['neptune']['project'],
             api_token=credentials['neptune']['api_token']
         )
-
-        if config['model']['model_type'] == 'kraft_unet':
-            config['model']['batch_norm'] = True
-            config['model']['conv_transpose'] = True
-            config['model']['squeeze'] = True
-            config['model']['double_double_conv'] = True
-        elif config['model']['model_type'] == 'metwaly_fnn':
-            config['model']['batch_norm'] = False
-            config['model']['conv_transpose'] = False
-            config['model']['double_double_conv'] = False
-            config['model']['in_out_filters'] = 0
 
         run["model/config"] = {
             "model_name": config['model']['model_type'],
@@ -120,35 +109,23 @@ def train(config_path, log_neptune):
         raise ValueError(
             f"Unsupported version of data generator: {config['dataset']['data_generator']}")
 
-    if config['model']['model_type'] == 'kraft_unet':
-        model = KraftUNet(input_shape=config['model']['input_shape'], in_out_filters=config['model']['in_out_filters'])
-    elif config['model']['model_type'] == 'metwaly_fnn':
-        model = MetwalyFNN(input_shape=config['model']['input_shape'], squeeze=config['model']['squeeze'])
-    else:
-        model = UNet(
-            input_shape=config['model']['input_shape'],
-            in_out_filters=config['model']['in_out_filters'],
-            batch_norm=config['model']['batch_norm'],
-            conv_transpose=config['model']['conv_transpose'],
-            squeeze=config['model']['squeeze'],
-            double_double_conv=config['model']['double_double_conv']
-        )
+    model = UNet(
+        input_shape=config['model']['input_shape'],
+        in_out_filters=config['model']['in_out_filters'],
+        batch_norm=config['model']['batch_norm'],
+        conv_transpose=config['model']['conv_transpose'],
+        squeeze=config['model']['squeeze'],
+        double_double_conv=config['model']['double_double_conv']
+    )
 
     metrics = config['model']['metrics']
-    if config['model']['training_type'] == 'density_estimation':
-        metrics=[
-            *metrics,
-            CountAccuracy(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_acc'),
-            CountMAE(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mae'),
-            CountMSE(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mse'),
-            CountMeanRelativeAbsoluteError(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mrae')
-        ]
-    if config['model']['training_type'] == 'classification':
-        metrics = [
-            *metrics,
-            CategoricalAccuracy(name='accuracy'),
-            F1Score(num_classes=6, average='micro')
-        ]
+    metrics=[
+        *metrics,
+        CountAccuracy(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_acc'),
+        CountMAE(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mae'),
+        CountMSE(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mse'),
+        CountMeanRelativeAbsoluteError(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mrae')
+    ]
 
     model.compile(
         optimizer=config['model']['optimizer'],
