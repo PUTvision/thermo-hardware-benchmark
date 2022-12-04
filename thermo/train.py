@@ -15,8 +15,6 @@ from neptune.new.integrations.tensorflow_keras import NeptuneCallback
 from models import UNet
 from metrics import CountAccuracy, CountMAE, CountMSE, CountMeanRelativeAbsoluteError
 from data_generator.thermal_data_generator import ThermalDataset
-from data_generator.thermal_data_generator_v2 import ThermalDataset as ThermalDatasetv2
-from utils.data_utils import load_data_for_labeled_batches, AugmentedBatchesTrainingData
 from utils.model_utils import check_model_prediction, evaluate
 
 
@@ -60,43 +58,14 @@ def train(config_path, log_neptune):
 
         run["model/config_file"].upload(config_path)
 
-    if config['dataset']['data_generator'] == 'v1':
-        training_data = load_data_for_labeled_batches(
-            labeled_batch_dirs=config['dataset']["training_dirs"],
-            project_data_dir='./dataset/'
-        )
-        validation_data = load_data_for_labeled_batches(
-            labeled_batch_dirs=config['dataset']["validation_dirs"],
-            project_data_dir='./dataset/'
-        )
-        test_data = load_data_for_labeled_batches(
-            labeled_batch_dirs=config['dataset']["test_dirs"],
-            project_data_dir='./dataset/'
-        )
-
-        augmented_data_training = AugmentedBatchesTrainingData()
-        augmented_data_training.add_training_batch(training_data)
-
-        augmented_data_validation = AugmentedBatchesTrainingData()
-        augmented_data_validation.add_training_batch(validation_data, flip_and_rotate=False)
-
-        augmented_data_test = AugmentedBatchesTrainingData()
-        augmented_data_test.add_training_batch(test_data, flip_and_rotate=False)
-
-        train_data_gen = ThermalDataset(augmented_data_training, batch_size=config['model']['batch_size'])
-        val_data_gen = ThermalDataset(augmented_data_validation, batch_size=config['model']['batch_size'])
-        test_data_gen = ThermalDataset(augmented_data_test, batch_size=1)
-
-    elif config['dataset']['data_generator'] == 'v2':
-        train_data_gen = ThermalDatasetv2(data_path=Path('./datasetv2'), sequences_names=config['dataset']["training_dirs"],
-                                          person_point_weight=config['dataset']['sum_of_values_for_one_person'], 
-                                          batch_size=config['model']['batch_size'], augment=True)
-        val_data_gen = ThermalDatasetv2(data_path=Path('./datasetv2'), sequences_names=config['dataset']["validation_dirs"],
-                                        person_point_weight=config['dataset']['sum_of_values_for_one_person'], batch_size=config['model']['batch_size'])
-        test_data_gen = ThermalDatasetv2(data_path=Path('./datasetv2'), sequences_names=config['dataset']["test_dirs"],
-                                         person_point_weight=config['dataset']['sum_of_values_for_one_person'], batch_size=1)
-    else:
-        raise ValueError(f"Unsupported version of data generator: {config['dataset']['data_generator']}")
+    ppw = config['dataset']['sum_of_values_for_one_person']
+    
+    train_data_gen = ThermalDataset(data_path=Path('./data'), sequences_names=config['dataset']["training_dirs"],
+                                    ppw=ppw, batch_size=config['model']['batch_size'], augment=True)
+    val_data_gen = ThermalDataset(data_path=Path('./data'), sequences_names=config['dataset']["validation_dirs"],
+                                  ppw=ppw, batch_size=config['model']['batch_size'])
+    test_data_gen = ThermalDataset(data_path=Path('./data'), sequences_names=config['dataset']["test_dirs"],
+                                   ppw=ppw, batch_size=1)
 
     model = UNet(
         input_shape=config['model']['input_shape'],
@@ -110,10 +79,10 @@ def train(config_path, log_neptune):
     metrics = config['model']['metrics']
     metrics=[
         *metrics,
-        CountAccuracy(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_acc'),
-        CountMAE(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mae'),
-        CountMSE(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mse'),
-        CountMeanRelativeAbsoluteError(person_point_weight=config['dataset']['sum_of_values_for_one_person'], name='count_mrae')
+        CountAccuracy(ppw=ppw, name='count_acc'),
+        CountMAE(ppw=ppw, name='count_mae'),
+        CountMSE(ppw=ppw, name='count_mse'),
+        CountMeanRelativeAbsoluteError(ppw=ppw, name='count_mrae')
     ]
 
     model.compile(
@@ -128,10 +97,10 @@ def train(config_path, log_neptune):
 
         run["model/model_summary"].upload("./model_summary.txt")
 
+    patience = config['model']['early_stopping_patience']
     callbacks = [
-        tf.keras.callbacks.EarlyStopping(
-            monitor='val_loss', patience=config['model']['early_stopping_patience'], restore_best_weights=True),
-        tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=5)
+        tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=patience, restore_best_weights=True),
+        tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=patience//2)
     ]
 
     if log_neptune:
