@@ -1,8 +1,6 @@
 model:
   model_save_name: "thermo_tf"
 
-  training_type: "density_estimation" # density_estimation or classification
-
   model_type: "unet"
 
   in_out_filters: 16

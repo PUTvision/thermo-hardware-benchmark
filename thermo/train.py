@@ -8,8 +8,6 @@ import click
 import numpy as np
 import seaborn as sns
 import tensorflow as tf
-from tensorflow.keras.metrics import CategoricalAccuracy
-from tensorflow_addons.metrics import F1Score
 import matplotlib.pyplot as plt
 import neptune.new as neptune
 from neptune.new.integrations.tensorflow_keras import NeptuneCallback
@@ -85,29 +83,20 @@ def train(config_path, log_neptune):
         augmented_data_test = AugmentedBatchesTrainingData()
         augmented_data_test.add_training_batch(test_data, flip_and_rotate=False)
 
-        train_data_gen = ThermalDataset(augmented_data_training, 
-                                        batch_size=config['model']['batch_size'],
-                                        task=config['model']['training_type'])
-        val_data_gen = ThermalDataset(augmented_data_validation, 
-                                      batch_size=config['model']['batch_size'],
-                                      task=config['model']['training_type'])
-        test_data_gen = ThermalDataset(augmented_data_test, batch_size=1,
-                                       task=config['model']['training_type'])
+        train_data_gen = ThermalDataset(augmented_data_training, batch_size=config['model']['batch_size'])
+        val_data_gen = ThermalDataset(augmented_data_validation, batch_size=config['model']['batch_size'])
+        test_data_gen = ThermalDataset(augmented_data_test, batch_size=1)
 
     elif config['dataset']['data_generator'] == 'v2':
         train_data_gen = ThermalDatasetv2(data_path=Path('./datasetv2'), sequences_names=config['dataset']["training_dirs"],
                                           person_point_weight=config['dataset']['sum_of_values_for_one_person'], 
-                                          batch_size=config['model']['batch_size'], 
-                                          augment=True, task=config['model']['training_type'])
+                                          batch_size=config['model']['batch_size'], augment=True)
         val_data_gen = ThermalDatasetv2(data_path=Path('./datasetv2'), sequences_names=config['dataset']["validation_dirs"],
-                                        person_point_weight=config['dataset']['sum_of_values_for_one_person'], 
-                                        batch_size=config['model']['batch_size'], task=config['model']['training_type'])
+                                        person_point_weight=config['dataset']['sum_of_values_for_one_person'], batch_size=config['model']['batch_size'])
         test_data_gen = ThermalDatasetv2(data_path=Path('./datasetv2'), sequences_names=config['dataset']["test_dirs"],
-                                         person_point_weight=config['dataset']['sum_of_values_for_one_person'], 
-                                         batch_size=1, task=config['model']['training_type'])
+                                         person_point_weight=config['dataset']['sum_of_values_for_one_person'], batch_size=1)
     else:
-        raise ValueError(
-            f"Unsupported version of data generator: {config['dataset']['data_generator']}")
+        raise ValueError(f"Unsupported version of data generator: {config['dataset']['data_generator']}")
 
     model = UNet(
         input_shape=config['model']['input_shape'],
