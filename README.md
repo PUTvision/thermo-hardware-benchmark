@@ -23,9 +23,9 @@ The repository includes the code for reproducing experiments and obtaining resul
   journal={IEEE Access}, 
   title={Efficient People Counting in Thermal Images: The Benchmark of Resource-Constrained Hardware}, 
   year={2022},
-  volume={},
+  volume={10},
   number={},
-  pages={1-1},
+  pages={124835-124847},
   doi={10.1109/ACCESS.2022.3225233}
 }
 ```
