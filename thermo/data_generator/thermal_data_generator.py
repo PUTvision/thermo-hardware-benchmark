@@ -45,7 +45,7 @@ class ThermalDataset(tf.keras.utils.Sequence):
 
         return np.array([label])
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._frames) // self._batch_size
 
     def __getitem__(self, batch_idx: int) -> Tuple[tf.Tensor, tf.Tensor]:

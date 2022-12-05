@@ -20,7 +20,7 @@ from utils.model_utils import check_model_prediction, evaluate
 
 @click.command()
 @click.option('-p', '--config_path', help='Path to file with config', type=str)
-@click.option('--log_neptune', is_flag=True)
+@click.option('--log_neptune', is_flag=True, help='Use Neptune experiment tracker')
 def train(config_path, log_neptune):
     print(f'TensorFlow version: {tf.__version__}')
     print(tf.config.list_physical_devices('GPU'))
