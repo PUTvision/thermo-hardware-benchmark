@@ -1,62 +1,73 @@
-from typing import Tuple
+import json
+from pathlib import Path
+from typing import Sequence, List, Tuple
 
 import numpy as np
+import pandas as pd
 import tensorflow as tf
-
-from utils.data_utils import AugmentedBatchesTrainingData, get_img_reconstructed_from_labels
+from albumentations import Compose, Flip, Affine, KeypointParams
+from scipy.ndimage import gaussian_filter
 
 
 class ThermalDataset(tf.keras.utils.Sequence):
+    def __init__(self, data_path: Path, sequences_names: Sequence[str], person_point_weight: float, batch_size: int, augment: bool = False):
+        self._frames, self._labels = self._load_data(data_path, sequences_names)
+        self._person_point_weight = person_point_weight
+        self._batch_size = batch_size
+        self._augment = augment
+        self._augmentations = Compose([
+            Affine(scale=(0.9, 1.1), rotate=(-15, 15), shear=(-5, 5), translate_percent=(-10, 10)),
+            Flip()
+        ], keypoint_params=KeypointParams(format='xy', remove_invisible=True))
+        self._transforms = Compose([], keypoint_params=KeypointParams(format='xy', remove_invisible=True))
 
-    def __init__(self, augmented_data: AugmentedBatchesTrainingData, batch_size:int=16, shuffle:bool=False, task:str='density_estimation'):
-        self.augmented_data = AugmentedBatchesTrainingData
-        self.batch_size = batch_size
-        self.shuffle = shuffle
-        self.task = task
-        self._index_to_batch_and_subindex_map = {}
+    @staticmethod
+    def _load_data(data_path: Path, sequences_names: Sequence[str]) -> Tuple[List[np.ndarray], List[List[List[float]]]]:
+        frames = []
+        labels = []
+        for sequence_name in sequences_names:
+            df = pd.read_hdf(data_path / f'{sequence_name}.h5')
+
+            frames.extend((np.array(df['data'].values.tolist()) - 20) / 15)
+            labels.extend(df['points'].values.tolist())
         
-        self._cache = {}
-        
-        i = 0
-        for batch in augmented_data.batches:
-            for j in range(len(batch.raw_ir_data)):
-                self._index_to_batch_and_subindex_map[i] = (batch, j) 
-                i += 1
+        return frames, labels
+
+    @staticmethod
+    def generate_mask(keypoints: List[Tuple[int, int]], image_shape: Tuple[int, int], person_point_weight: float, sigma: Tuple[int, int] = (3,3)):
+        label = np.zeros(image_shape, dtype=np.float32)
+
+        for key in keypoints:
+            x, y = map(int, key)
+            label[y, x] = person_point_weight
+
+        label = gaussian_filter(label, sigma=sigma, order=0)
+
+        return np.array([label])
 
     def __len__(self) -> int:
-        return len(self._index_to_batch_and_subindex_map) // self.batch_size
+        return len(self._frames) // self._batch_size
 
-    def __getitem__(self, batch_idx: int) -> Tuple[np.ndarray, np.ndarray]:
-        if batch_idx not in self._cache:
-            frames = []
-            reconstructions = []
-            number_of_people = []
-            for i in range(self.batch_size):
-                idx = batch_idx * self.batch_size + i
-                batch, subindex = self._index_to_batch_and_subindex_map[idx]
-                frame = batch.normalized_ir_data[subindex][np.newaxis, :, :][..., np.newaxis]
-                frames.append(frame)
+    def __getitem__(self, batch_idx: int) -> Tuple[tf.Tensor, tf.Tensor]:
+        frames = []
+        masks = []
+        for i in range(self._batch_size):
+            idx = batch_idx * self._batch_size + i
 
-                batch, subindex = self._index_to_batch_and_subindex_map[idx]
-                centre_points = batch.centre_points[subindex]
-                img_reconstructed = get_img_reconstructed_from_labels(centre_points)
-                img_reconstructed_3d = img_reconstructed[np.newaxis, :, :]
-                reconstructions.append(img_reconstructed_3d)
+            frame, keypoints = self._frames[idx], self._labels[idx]
+            for keypoint in keypoints:
+                keypoint[0] = min(keypoint[0], frame.shape[1] - 1)
+                keypoint[1] = min(keypoint[1], frame.shape[0] - 1)
 
-                nop = self.get_number_of_persons_for_frame(batch_idx*self.batch_size + i)
-                nop_one_hot = np.zeros(6)
-                nop_one_hot[nop] = 1
-                number_of_people.append(nop_one_hot.astype(int))
-
-            if self.task == 'classification':
-                result = np.vstack(frames), np.vstack(number_of_people)
+            if self._augment:
+                transformed = self._augmentations(image=frame, keypoints=keypoints)
             else:
-                result = np.vstack(frames), np.vstack(reconstructions)
+                transformed = self._transforms(image=frame, keypoints=keypoints)
 
-            self._cache[batch_idx] = result
-            
-        return self._cache[batch_idx]
-    
-    def get_number_of_persons_for_frame(self, idx):
-        batch, subindex = self._index_to_batch_and_subindex_map[idx]
-        return len(batch.centre_points[subindex])
+            frame, keypoints = transformed['image'], transformed['keypoints']
+            mask = self.generate_mask(keypoints, frame.shape, self._person_point_weight)
+
+            frames.append(frame)
+            masks.append(mask)
+
+        return np.expand_dims(np.stack(frames), axis=-1), np.vstack(masks)
