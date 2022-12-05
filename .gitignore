@@ -397,3 +397,8 @@ cython_debug/
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,c,python,jupyternotebooks,visualstudiocode,pycharm,linux
+
+# Ignore h5 model and data files
+*.h5
+*.csv
+*.json

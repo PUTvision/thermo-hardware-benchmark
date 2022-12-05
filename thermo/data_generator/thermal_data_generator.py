@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Sequence, List, Tuple
 
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from albumentations import Compose, Flip, Affine, KeypointParams
 from scipy.ndimage import gaussian_filter
@@ -10,8 +11,7 @@ from scipy.ndimage import gaussian_filter
 
 class ThermalDataset(tf.keras.utils.Sequence):
     def __init__(self, data_path: Path, sequences_names: Sequence[str], person_point_weight: float, batch_size: int, augment: bool = False):
-        self._frames = self._load_frames(data_path, sequences_names)
-        self._labels = self._load_labels(data_path, sequences_names)
+        self._frames, self._labels = self._load_data(data_path, sequences_names)
         self._person_point_weight = person_point_weight
         self._batch_size = batch_size
         self._augment = augment
@@ -22,30 +22,16 @@ class ThermalDataset(tf.keras.utils.Sequence):
         self._transforms = Compose([], keypoint_params=KeypointParams(format='xy', remove_invisible=True))
 
     @staticmethod
-    def _load_frames(data_path: Path, sequences_names: Sequence[str]) -> List[np.ndarray]:
+    def _load_data(data_path: Path, sequences_names: Sequence[str]) -> Tuple[List[np.ndarray], List[List[List[float]]]]:
         frames = []
-        for sequence_name in sequences_names:
-            with (data_path / 'data' / f'{sequence_name}.json').open() as file:
-                sequence_data = json.load(file)
-
-            for frame_data in sequence_data:
-                frame = np.asarray(frame_data['data'], dtype=np.float32)
-                frame -= 20
-                frame /= 15
-                frames.append(frame)
-
-        return frames
-
-    @staticmethod
-    def _load_labels(data_path: Path, sequences_names: Sequence[str]) -> List[List[List[float]]]:
         labels = []
         for sequence_name in sequences_names:
-            with (data_path / 'labels' / f'{sequence_name}.json').open() as file:
-                sequence_labels = json.load(file)
+            df = pd.read_hdf(data_path / f'{sequence_name}.h5')
 
-            labels.extend(sequence_labels)
-
-        return labels
+            frames.extend((np.array(df['data'].values.tolist()) - 20) / 15)
+            labels.extend(df['points'].values.tolist())
+        
+        return frames, labels
 
     @staticmethod
     def generate_mask(keypoints: List[Tuple[int, int]], image_shape: Tuple[int, int], person_point_weight: float, sigma: Tuple[int, int] = (3,3)):

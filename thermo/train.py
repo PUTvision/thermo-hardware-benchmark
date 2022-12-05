@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import neptune.new as neptune
 from neptune.new.integrations.tensorflow_keras import NeptuneCallback
 
-from models import UNet
+from models.unet import UNet
 from metrics import CountAccuracy, CountMAE, CountMSE, CountMeanRelativeAbsoluteError
 from data_generator.thermal_data_generator import ThermalDataset
 from utils.model_utils import check_model_prediction, evaluate
@@ -29,7 +29,6 @@ def train(config_path, log_neptune):
         config = yaml.safe_load(stream)
 
     model_save_name = config['model']['model_save_name']
-    density_estimation = config['model']['training_type'] == 'density_estimation'
 
     if log_neptune:
         with open('./configs/credentials.yaml', 'r') as stream:
@@ -61,11 +60,11 @@ def train(config_path, log_neptune):
     ppw = config['dataset']['sum_of_values_for_one_person']
     
     train_data_gen = ThermalDataset(data_path=Path('./data'), sequences_names=config['dataset']["training_dirs"],
-                                    ppw=ppw, batch_size=config['model']['batch_size'], augment=True)
+                                    person_point_weight=ppw, batch_size=config['model']['batch_size'], augment=True)
     val_data_gen = ThermalDataset(data_path=Path('./data'), sequences_names=config['dataset']["validation_dirs"],
-                                  ppw=ppw, batch_size=config['model']['batch_size'])
+                                  person_point_weight=ppw, batch_size=config['model']['batch_size'])
     test_data_gen = ThermalDataset(data_path=Path('./data'), sequences_names=config['dataset']["test_dirs"],
-                                   ppw=ppw, batch_size=1)
+                                   person_point_weight=ppw, batch_size=1)
 
     model = UNet(
         input_shape=config['model']['input_shape'],
@@ -79,10 +78,10 @@ def train(config_path, log_neptune):
     metrics = config['model']['metrics']
     metrics=[
         *metrics,
-        CountAccuracy(ppw=ppw, name='count_acc'),
-        CountMAE(ppw=ppw, name='count_mae'),
-        CountMSE(ppw=ppw, name='count_mse'),
-        CountMeanRelativeAbsoluteError(ppw=ppw, name='count_mrae')
+        CountAccuracy(person_point_weight=ppw, name='count_acc'),
+        CountMAE(person_point_weight=ppw, name='count_mae'),
+        CountMSE(person_point_weight=ppw, name='count_mse'),
+        CountMeanRelativeAbsoluteError(person_point_weight=ppw, name='count_mrae')
     ]
 
     model.compile(
@@ -118,31 +117,27 @@ def train(config_path, log_neptune):
 
     model.save(f'./{model_save_name}.h5')
 
-    if density_estimation:
-        print('Test data:')
-        test_acc, test_f1, test_cm = evaluate(f'./{model_save_name}.h5', 'keras', test_data_gen, config)
-        print('Train data:')
-        train_acc, train_f1, train_cm = evaluate(f'./{model_save_name}.h5', 'keras', train_data_gen, config)
-        print('Validation data:')
-        val_acc, val_f1, val_cm = evaluate(f'./{model_save_name}.h5', 'keras', val_data_gen, config)
-
-        for cm, cm_name in [(test_cm, 'test'), (train_cm, 'train'), (val_cm, 'val')]:
-            plt.figure(figsize=(5, 4))
-            sns.heatmap(
-                cm, annot=True, cmap="Blues", fmt='0.0f',
-                xticklabels=np.arange(config['dataset']["max_people_count"]+1),
-                yticklabels=np.arange(config['dataset']["max_people_count"]+1)
-            )
-            plt.xlabel('Labels')
-            plt.ylabel('Predictions')
-            plt.savefig(f'./{cm_name}_confusion_matrix.png')
-
-        count, output_frame = check_model_prediction(model, config)
-        print(f'People count for raw frame: {round(count, 4)}')
-
-        plt.figure(figsize=(16, 12))
-        plt.imshow(output_frame[0][..., 0])
-        plt.savefig('./output_frame.png')
+    print('Test data:')
+    test_acc, test_f1, test_cm = evaluate(f'./{model_save_name}.h5', 'keras', test_data_gen, config)
+    print('Train data:')
+    train_acc, train_f1, train_cm = evaluate(f'./{model_save_name}.h5', 'keras', train_data_gen, config)
+    print('Validation data:')
+    val_acc, val_f1, val_cm = evaluate(f'./{model_save_name}.h5', 'keras', val_data_gen, config)
+    for cm, cm_name in [(test_cm, 'test'), (train_cm, 'train'), (val_cm, 'val')]:
+        plt.figure(figsize=(5, 4))
+        sns.heatmap(
+            cm, annot=True, cmap="Blues", fmt='0.0f',
+            xticklabels=np.arange(config['dataset']["max_people_count"]+1),
+            yticklabels=np.arange(config['dataset']["max_people_count"]+1)
+        )
+        plt.xlabel('Labels')
+        plt.ylabel('Predictions')
+        plt.savefig(f'./{cm_name}_confusion_matrix.png')
+    count, output_frame = check_model_prediction(model, config)
+    print(f'People count for raw frame: {round(count, 4)}')
+    plt.figure(figsize=(16, 12))
+    plt.imshow(output_frame[0][..., 0])
+    plt.savefig('./output_frame.png')
 
     if log_neptune:
         for i, metric in enumerate(eval_metrics):
@@ -150,24 +145,23 @@ def train(config_path, log_neptune):
 
         run["model/model"].upload(f'./{model_save_name}.h5')
 
-        if density_estimation:
-            run["model/eval/accuracy"] = test_acc
-            run["model/eval/F1"] = test_f1
-            run["model/eval/raw_confusion_matrix"] = test_cm
-            run["model/eval/confusion_matrix"].upload(f'./test_confusion_matrix.png')
-            run["model/eval/output_frame_count"] = count
-            run["model/eval/raw_output_frame"] = output_frame
-            run["model/eval/output_frame"].upload(f'./output_frame.png')
+        run["model/eval/accuracy"] = test_acc
+        run["model/eval/F1"] = test_f1
+        run["model/eval/raw_confusion_matrix"] = test_cm
+        run["model/eval/confusion_matrix"].upload(f'./test_confusion_matrix.png')
+        run["model/eval/output_frame_count"] = count
+        run["model/eval/raw_output_frame"] = output_frame
+        run["model/eval/output_frame"].upload(f'./output_frame.png')
 
-            run["model/train/accuracy"] = train_acc
-            run["model/train/F1"] = train_f1
-            run["model/train/raw_confusion_matrix"] = train_cm
-            run["model/train/confusion_matrix"].upload(f'./train_confusion_matrix.png')
+        run["model/train/accuracy"] = train_acc
+        run["model/train/F1"] = train_f1
+        run["model/train/raw_confusion_matrix"] = train_cm
+        run["model/train/confusion_matrix"].upload(f'./train_confusion_matrix.png')
 
-            run["model/val/accuracy"] = val_acc
-            run["model/val/F1"] = val_f1
-            run["model/val/raw_confusion_matrix"] = val_cm
-            run["model/val/confusion_matrix"].upload(f'./val_confusion_matrix.png')
+        run["model/val/accuracy"] = val_acc
+        run["model/val/F1"] = val_f1
+        run["model/val/raw_confusion_matrix"] = val_cm
+        run["model/val/confusion_matrix"].upload(f'./val_confusion_matrix.png')
 
     del model
 
