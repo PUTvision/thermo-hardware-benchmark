@@ -7,7 +7,7 @@ The repository includes the code for reproducing experiments and obtaining resul
 - [evaluation](./evaluation/) folder consists of hardware deployment, inference, and evaluation tools. 
 
 
-## Table of contents
+## Table of Contents
 * [Citation](#citation)
 * [Dataset](#dataset)
 * [Benchmark Hardware](#benchmark-hardware)
