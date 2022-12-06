@@ -46,9 +46,9 @@ The benchmark utilizes [Thermo Presence](https://github.com/PUTvision/thermo-pre
 
 
 <p align="center">
-  <img width='300px' src="./README/rgb_image.png" />
-  <img width='300px' src="./README/thermal_image.png" />
-  <img width='300px' src="./README/estimation.png" />
+  <img width='250px' src="./README/rgb_image.png" />
+  <img width='250px' src="./README/thermal_image.png" />
+  <img width='250px' src="./README/estimation.png" />
 </p>
 
 

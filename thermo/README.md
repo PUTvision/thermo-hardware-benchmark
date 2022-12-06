@@ -34,7 +34,7 @@ Options:
 ```
 
 <p align="center">
-  <img width='800px' src="../README/confusion_matrix.png" />
+  <img width='500px' src="../README/confusion_matrix.png" />
 </p>
 
 ## Optimization and quantization
