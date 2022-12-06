@@ -26,5 +26,5 @@ The source code for Arduino devices, which use [Arduino IDE](https://www.arduino
 Connect the Arduino device using a serial port to the computer. Run the `serial_evaluator.py` script with the below configuration (adjust the baud rate or serial port when required): 
 
 ```console
-python serial_evaluator.py --test-input-path ./data/test_input_2347.npy --test-output-path ./data/test_output_2347.npy --output-path ./arduino_results.npy 
+python serial_evaluator.py --test-input-path ./data/test_input_2347.npy --output-path ./arduino_results.npy 
 ```

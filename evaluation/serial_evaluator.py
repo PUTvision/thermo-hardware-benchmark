@@ -9,14 +9,11 @@ from tqdm import tqdm
 
 @click.command()
 @click.option('--test-input-path', help='Path to npy file with test input', type=click.Path(exists=True, file_okay=True))
-@click.option('--test-output-path', help='Path to npy file with test output', type=click.Path(exists=True, file_okay=True))
 @click.option('--output-path', help='Path for output file with results', type=click.Path())
 @click.option('--serial-port', help='Serial port', type=str, default='/dev/ttyUSB1')
 @click.option('--baudrate', help='Baud rate value', type=int, default=115200)
-def main(test_input_path, test_output_path, output_path, serial_port, baudrate):
+def main(test_input_path, output_path, serial_port, baudrate):
     test_input = np.load(Path(test_input_path))
-    test_output = np.load(Path(test_output_path))
-    test_output = np.expand_dims(test_output, -1)
     print(f'Test array shape: {test_input.shape}')
 
     input_scale = 0.0038248365744948387
