@@ -1,4 +1,4 @@
-# Hardware Benchmark of Efficient People Counting Algorithm
+# Hardware Benchmark of Neural Network Method for Presence Monitoring in Thermal Images
 
 > This is the official repository of the paper: [*Efficient People Counting in Thermal Images: The Benchmark of Resource-Constrained Hardware*](https://ieeexplore.ieee.org/document/9964383).
 
@@ -23,9 +23,9 @@ The repository includes the code for reproducing experiments and obtaining resul
   journal={IEEE Access}, 
   title={Efficient People Counting in Thermal Images: The Benchmark of Resource-Constrained Hardware}, 
   year={2022},
-  volume={},
+  volume={10},
   number={},
-  pages={1-1},
+  pages={124835-124847},
   doi={10.1109/ACCESS.2022.3225233}
 }
 ```
@@ -43,6 +43,13 @@ The benchmark utilizes [Thermo Presence](https://github.com/PUTvision/thermo-pre
 |    Test    | 162 |  83 |  211 |  341 | 1235 | 315 |  2347 |
 
 </div>
+
+
+<p align="center">
+  <img width='250px' src="./README/rgb_image.png" />
+  <img width='250px' src="./README/thermal_image.png" />
+  <img width='250px' src="./README/estimation.png" />
+</p>
 
 
 ## Benchmark Hardware
