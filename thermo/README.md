@@ -1,5 +1,10 @@
-# Thermo Hardware Benchmark 
+# Neural Network Method for Presence Monitoring in Thermal Images
 
+This directory contains source code enabling the reproduction of a neural network model for presence monitoring tasks in low-resolution thermal images. It is required to download [Thermo Presence data](https://github.com/PUTvision/thermo-presence/tree/master/dataset/hdfs) (in h5 format) directly to [data](./data) folder before starting the training process. In order to do so, run [`get_data.sh`](./get_data.sh) script from the console.
+
+```console
+bash get_data.sh
+```
 
 ## Model Training
 
@@ -27,6 +32,10 @@ Options:
   --log_neptune           Use Neptune experiment tracker
   --help                  Show this message and exit.
 ```
+
+<p align="center">
+  <img width='800px' src="../README/confusion_matrix.png" />
+</p>
 
 ## Optimization and quantization
 
