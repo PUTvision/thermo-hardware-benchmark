@@ -2,7 +2,7 @@
 
 This directory contains source code enabling the reproduction of a neural network model for presence monitoring tasks in low-resolution thermal images. It is required to download [Thermo Presence data](https://github.com/PUTvision/thermo-presence/tree/master/dataset/hdfs) (in h5 format) directly to [data](./data) folder before starting the training process. In order to do so, run [`get_data.sh`](./get_data.sh) script from the console.
 
-```console
+```shell
 bash get_data.sh
 ```
 
@@ -10,7 +10,7 @@ bash get_data.sh
 
 To train the density estimation model first check the parameters configuration in [config.yaml](./configs/config.yaml) file. Then call [train.py](./train.py) script as shown below:
 
-```console
+```shell
 python train.py -p configs/config.yaml
 ```
 

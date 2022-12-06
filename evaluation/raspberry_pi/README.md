@@ -18,7 +18,7 @@ This document contains configuration steps, source code, and evaluation of Raspb
 
 ## Evaluation
 
-```console
+```shell
 python evaluate_rpi4b.py --inference_type tflite --model-path ./models/model_int8.tflite --test-input-path ../data/test_input_2347.npy --output-path ./raspberry_pi_4b_tflite_results.npy
 ```
 
