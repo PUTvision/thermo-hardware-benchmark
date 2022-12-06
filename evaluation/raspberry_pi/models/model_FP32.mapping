@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<mapping>
+	<map>
+		<framework name="serving_default_input_1:0" output_port_id="serving_default_input_1:0" />
+		<IR name="serving_default_input_1:0" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="new_shape__95" output_port_id="new_shape__95" />
+		<IR name="new_shape__95" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu/Relu;model/conv2d/BiasAdd;model/conv2d_8/Conv2D;model/conv2d/Conv2D;conv2d/bias__31" output_port_id="model/re_lu/Relu;model/conv2d/BiasAdd;model/conv2d_8/Conv2D;model/conv2d/Conv2D;conv2d/bias__31:0" />
+		<IR name="model/re_lu/Relu;model/conv2d/BiasAdd;model/conv2d_8/Conv2D;model/conv2d/Conv2D;conv2d/bias__31" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__114" output_port_id="const_fold_opt__114" />
+		<IR name="const_fold_opt__114" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu/Relu;model/conv2d/BiasAdd;model/conv2d_8/Conv2D;model/conv2d/Conv2D;conv2d/bias" output_port_id="model/re_lu/Relu;model/conv2d/BiasAdd;model/conv2d_8/Conv2D;model/conv2d/Conv2D;conv2d/bias" />
+		<IR name="model/re_lu/Relu;model/conv2d/BiasAdd;model/conv2d_8/Conv2D;model/conv2d/Conv2D;conv2d/bias" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Relu__5" output_port_id="Relu__5:0" />
+		<IR name="Relu__5" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__103" output_port_id="const_fold_opt__103" />
+		<IR name="const_fold_opt__103" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu_1/Relu;model/conv2d_1/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_1/Conv2D;conv2d_1/bias" output_port_id="model/re_lu_1/Relu;model/conv2d_1/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_1/Conv2D;conv2d_1/bias" />
+		<IR name="model/re_lu_1/Relu;model/conv2d_1/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_1/Conv2D;conv2d_1/bias" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Relu__8" output_port_id="Relu__8:0" />
+		<IR name="Relu__8" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="model/max_pooling2d/MaxPool" output_port_id="model/max_pooling2d/MaxPool" />
+		<IR name="model/max_pooling2d/MaxPool" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__113" output_port_id="const_fold_opt__113" />
+		<IR name="const_fold_opt__113" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu_2/Relu;model/conv2d_2/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_2/Conv2D;conv2d_2/bias" output_port_id="model/re_lu_2/Relu;model/conv2d_2/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_2/Conv2D;conv2d_2/bias" />
+		<IR name="model/re_lu_2/Relu;model/conv2d_2/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_2/Conv2D;conv2d_2/bias" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Relu__11" output_port_id="Relu__11:0" />
+		<IR name="Relu__11" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__112" output_port_id="const_fold_opt__112" />
+		<IR name="const_fold_opt__112" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu_3/Relu;model/conv2d_3/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_3/Conv2D;conv2d_3/bias" output_port_id="model/re_lu_3/Relu;model/conv2d_3/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_3/Conv2D;conv2d_3/bias" />
+		<IR name="model/re_lu_3/Relu;model/conv2d_3/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_3/Conv2D;conv2d_3/bias" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Relu__14" output_port_id="Relu__14:0" />
+		<IR name="Relu__14" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__109" output_port_id="const_fold_opt__109" />
+		<IR name="const_fold_opt__109" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu_4/Relu;model/conv2d_4/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_4/Conv2D;conv2d_4/bias" output_port_id="model/re_lu_4/Relu;model/conv2d_4/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_4/Conv2D;conv2d_4/bias" />
+		<IR name="model/re_lu_4/Relu;model/conv2d_4/BiasAdd;model/conv2d_5/Conv2D;model/conv2d_4/Conv2D;conv2d_4/bias" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Relu__17" output_port_id="Relu__17:0" />
+		<IR name="Relu__17" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__108" output_port_id="const_fold_opt__108" />
+		<IR name="const_fold_opt__108" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu_5/Relu;model/conv2d_5/BiasAdd;model/conv2d_5/Conv2D;conv2d_5/bias" output_port_id="model/re_lu_5/Relu;model/conv2d_5/BiasAdd;model/conv2d_5/Conv2D;conv2d_5/bias" />
+		<IR name="model/re_lu_5/Relu;model/conv2d_5/BiasAdd;model/conv2d_5/Conv2D;conv2d_5/bias" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Relu__20" output_port_id="Relu__20:0" />
+		<IR name="Relu__20" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="Upsample__68" output_port_id="Upsample__68:0" />
+		<IR name="Upsample__68" output_port_id="4" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__104" output_port_id="const_fold_opt__104" />
+		<IR name="const_fold_opt__104" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/conv2d_6/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_6/Conv2D;conv2d_6/bias1" output_port_id="model/conv2d_6/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_6/Conv2D;conv2d_6/bias1" />
+		<IR name="model/conv2d_6/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_6/Conv2D;conv2d_6/bias1" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="model/concatenate/concat" output_port_id="model/concatenate/concat" />
+		<IR name="model/concatenate/concat" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__99" output_port_id="const_fold_opt__99" />
+		<IR name="const_fold_opt__99" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu_6/Relu;model/conv2d_7/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_7/Conv2D;conv2d_7/bias" output_port_id="model/re_lu_6/Relu;model/conv2d_7/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_7/Conv2D;conv2d_7/bias" />
+		<IR name="model/re_lu_6/Relu;model/conv2d_7/BiasAdd;model/conv2d_8/Conv2D;model/conv2d_7/Conv2D;conv2d_7/bias" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Relu__24" output_port_id="Relu__24:0" />
+		<IR name="Relu__24" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__115" output_port_id="const_fold_opt__115" />
+		<IR name="const_fold_opt__115" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="model/re_lu_7/Relu;model/conv2d_8/BiasAdd;model/conv2d_8/Conv2D;conv2d_8/bias" output_port_id="model/re_lu_7/Relu;model/conv2d_8/BiasAdd;model/conv2d_8/Conv2D;conv2d_8/bias" />
+		<IR name="model/re_lu_7/Relu;model/conv2d_8/BiasAdd;model/conv2d_8/Conv2D;conv2d_8/bias" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Relu__27" output_port_id="Relu__27:0" />
+		<IR name="Relu__27" output_port_id="1" />
+	</map>
+	<map>
+		<framework name="const_fold_opt__101" output_port_id="const_fold_opt__101" />
+		<IR name="const_fold_opt__101" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="StatefulPartitionedCall:047" output_port_id="StatefulPartitionedCall:0_raw_output___3:0" />
+		<IR name="StatefulPartitionedCall:047" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="new_shape__94" output_port_id="new_shape__94" />
+		<IR name="new_shape__94" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="StatefulPartitionedCall:0" output_port_id="StatefulPartitionedCall:0" />
+		<IR name="StatefulPartitionedCall:0" output_port_id="2" />
+	</map>
+</mapping>

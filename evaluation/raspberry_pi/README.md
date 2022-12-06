@@ -17,3 +17,21 @@ This document contains configuration steps, source code, and evaluation of Raspb
 
 
 ## Evaluation
+
+```console
+python evaluate_rpi4b.py --inference_type tflite --model-path ./models/model_int8.tflite --test-input-path ../data/test_input_2347.npy --output-path ./raspberry_pi_4b_tflite_results.npy
+```
+
+```console
+$ python evaluate_rpi4b.py --help
+
+Usage: evaluate_rpi4b.py [OPTIONS]
+
+Options:
+  --inference-type [tflite|edgetpu|myriad]
+                                  Inference framework (device)
+  --model-path PATH               Path to model
+  --test-input-path PATH          Path to npy file with test input
+  --output-path PATH              Path for output file with results
+  --help                          Show this message and exit.
+```
