@@ -43,6 +43,6 @@ The ESP32-related files are inside the [thermo](./thermo) directory. Whereas the
 
 Connect the UART pins accordingly: `RX -> 17`, `TX -> 16`. Run the `serial_evaluator.py` script with the below configuration:
 
-```console
-python serial_evaluator.py --test-input-path ./data/test_input_2347.npy --test-output-path ./data/test_output_2347.npy --output-path ./esp32_results.npy
+```shell
+python serial_evaluator.py --test-input-path ./data/test_input_2347.npy --output-path ./esp32_results.npy
 ```
