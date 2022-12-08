@@ -6,7 +6,6 @@ import tensorflow as tf
 from sklearn.metrics import f1_score
 
 from data_generator.thermal_data_generator import ThermalDataset
-from metrics import CountAccuracy, CountMAE, CountMSE, CountMeanRelativeAbsoluteError
 
 
 def check_model_prediction(model: tf.keras.Model, config: dict) -> Tuple[float, np.ndarray]:
@@ -18,7 +17,7 @@ def check_model_prediction(model: tf.keras.Model, config: dict) -> Tuple[float, 
          config['dataset']["temperature_normalization_min"]))
     input_frame = np.expand_dims(frame_normalized, axis=(0, 3))
 
-    output_frame = model.predict(input_frame)
+    output_frame = model.predict(input_frame, verbose=0)
 
     count = np.sum(output_frame) / \
         config['dataset']["sum_of_values_for_one_person"]
@@ -28,7 +27,7 @@ def check_model_prediction(model: tf.keras.Model, config: dict) -> Tuple[float, 
 
 def tf_keras_inference(model: tf.keras.Model, inputs: np.ndarray) -> np.ndarray:
     inference_start = time.time()
-    outputs = model.predict(inputs)
+    outputs = model.predict(inputs, verbose=0)
     inference_time = time.time() - inference_start
 
     return outputs, inference_time
@@ -104,14 +103,7 @@ def evaluate(
 
     if model_type == 'keras':
         inference_func = tf_keras_inference
-        custom_objects = {
-            "CountAccuracy": CountAccuracy,
-            "CountMAE": CountMAE,
-            "CountMSE": CountMSE,
-            "CountMeanRelativeAbsoluteError": CountMeanRelativeAbsoluteError
-        }
-        model = tf.keras.models.load_model(
-            model_path, custom_objects=custom_objects)
+        model = tf.keras.models.load_model(model_path, compile=False)
     elif model_type == 'tflite':
         inference_func = tflite_inference
         model = tf.lite.Interpreter(model_path)

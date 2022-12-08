@@ -5,6 +5,7 @@ neptune-client
 neptune-tensorflow-keras
 numpy
 opencv-python
+pandas
 PyYAML
 scipy
 seaborn
