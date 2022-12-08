@@ -45,6 +45,8 @@ The neural network is based on U-Net architecture with shallow structure, single
 
 ## Optimization and quantization
 
+Neural network optimization, quantization, and conversion processes are described in the [convert_optimize_quantize.ipynb](./convert_optimize_quantize.ipynb) Jupyter Notebook.
+
 
 ## Metrics
 
