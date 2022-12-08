@@ -33,9 +33,31 @@ Options:
   --help                  Show this message and exit.
 ```
 
+
+### Neural Network Architecture
+
+The neural network is based on U-Net architecture with shallow structure, single-channel input, and output. The proposed model has only 46 577 parameters.
+
 <p align="center">
-  <img width='500px' src="../README/confusion_matrix.png" />
+  <img width='800px' src="../README/nn_architecture.png" />
 </p>
+
 
 ## Optimization and quantization
 
+Neural network optimization, quantization, and conversion processes are described in the [convert_optimize_quantize.ipynb](./convert_optimize_quantize.ipynb) Jupyter Notebook.
+
+
+## Metrics
+
+<div align="center">
+
+| **Metric Name**   | MAE    | MSE    | Counting MAE | Counting MSE | Counting MRAPE [%] | Accuracy | F1 Score | Model size [kB] |
+|:-----------------:|:------:|:------:|:------------:|:------------:|:------------------:|:--------:|:--------:|:---------------:|
+| **TF FP32**       | 0.1057 | 0.0323 | 0.0226       | 0.0234       | 0.81               | 0.9778   | 0.9782   | 667             |
+
+</div>
+
+<p align="center">
+  <img width='500px' src="../README/confusion_matrix.png" />
+</p>
