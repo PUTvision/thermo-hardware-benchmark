@@ -13,6 +13,14 @@ Utilized microcontrollers were configured to communicate using UART (serial) - r
 
 ## Results
 
+To obtain metric results one should call [`eval.py`](./eval.py) script. This script takes as an input two files - one with GT output ([test_output_2347.npy](./data/test_output_2347.npy)) and one obtained using [`serial_evaluator.py`](./serial_evaluator.py) for specified hardware. Moreover, the evaluation script takes two additional flags: `stm` and `int8`, which are related to loading STM32 evaluation data. In general, one should call [`eval.py`](./eval.py) script similarly as shown below:
+
+```shell
+python eval.py --gt-test-output-path ./data/test_output_2347.npy --estimated-test-output-path ./results/myriad_fp16_output.npy
+```
+
+Achieved outputs for different hardware are stored in the [results](./results/) directory.
+
 <div align="center">
 
 | Device                                          | Data Type | Avg. Inference Time [ms]  | Counting MAE | Counting MSE | Counting MRAPE [%]  |
